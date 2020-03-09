@@ -1,1 +1,2 @@
 # teasoda
+set teasoda home
