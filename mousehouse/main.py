@@ -5,6 +5,11 @@ import sys
 import configparser
 import errno
 import logging
+from flask import Flask
+from rest import manager, machines
+
+app = Flask(__name__)
+app.register_blueprint(manager.app, url_prefix = '/teadoda/v1')
 
 home = os.environ['Teasoda_home']
 
