@@ -1,2 +1,2 @@
-# teasoda
-set teasoda home
+# mousehouse
+set mousehouse home
