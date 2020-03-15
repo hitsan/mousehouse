@@ -1,13 +1,31 @@
-import configparser
-import os    
+import logging
+import os
 
-class ConfigReader:
-    _config_reader = None
+class MouseHouseLog:
     _conf = None
+    logging.basicConfig(level=logging.INFO)
     def __new__(cls):
         if cls._configReader is None:
             cls._configReader = super().__new__(cls)
         return cls._configReader
+
+    def getLogger(self):
+        logger = logging.getLogger(self)
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter('my-format')
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG)
+        return logger
+
+
+    @classmethod
+    def _initLogging(cls):
+        #create logger
+        log
+        if os.path.isfile()
+        logger = logging.getLogger()
+        logger.setLevel(logging.DEBUG)
 
     @classmethod
     def getConfig(cls):
