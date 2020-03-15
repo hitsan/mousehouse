@@ -1,3 +1,4 @@
+"""
 import logging
 import os
 
@@ -43,3 +44,4 @@ class MouseHouseLog:
                 print("Not found config.ini file. Please make config.ini file in config directory")
                 exit(0)
         return cls._conf
+"""
