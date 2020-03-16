@@ -1,5 +1,6 @@
 import configparser
-import os    
+import os
+from utils import logger as lg
 
 class ConfigReader:
     _config_reader = None
