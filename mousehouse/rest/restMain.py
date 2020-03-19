@@ -1,7 +1,7 @@
 from flask import Flask, abort, request, jsonify, Blueprint
 from flask_restful import Resource, Api
-from machines import machines as mc
-from master import master as ms
+from rest.machines import machines as mc
+from rest.master import master as ms
 
 #mousehouse version
 class Root(Resource):
@@ -30,7 +30,3 @@ api.add_resource(ms.MasterLogs, '/master/masterlogs/')
 
 #Machines's URL
 api.add_resource(mc.Machines, '/machines/')
-
-
-if __name__ == "__main__":
-    app.run(debug=True)

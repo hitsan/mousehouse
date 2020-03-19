@@ -13,16 +13,18 @@ class ConfigReader:
     @classmethod
     def getConfig(cls):
         #return cls._config_reader
+        logger = lg.getLogger(__name__, True)
         if cls._conf is None:
+            logger.info("Start reading the config.ini")
             cls._conf = configparser.ConfigParser()
             try:
                 home = os.environ['mousehouse_home']
                 configPath =  home + '/config/config.ini'
                 cls._conf.read(configPath, encoding='utf-8')
             except KeyError as e:  
-                print("Please set mousehouse_home")
+                logger.error("Please set mousehouse_home")
                 exit(0)
             except TypeError:
-                print("Not found config.ini file. Please make config.ini file in config directory")
+                logger.error("Not found config.ini file. Please make config.ini file in config directory")
                 exit(0)
         return cls._conf

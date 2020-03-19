@@ -1,6 +1,6 @@
 import logging
 
-def getLogger(name, logFlie, level=logging.DEBUG):
+def getLogger(name, console=False,logFlie='logs/master.log', level=logging.DEBUG):
     logger = logging.getLogger(name)
     logger.setLevel(level)
 
@@ -8,6 +8,10 @@ def getLogger(name, logFlie, level=logging.DEBUG):
 
     fhdlr = logging.FileHandler(logFlie)
     fhdlr.setFormatter(fmt)
+    if console is True:
+        shdlr = logging.StreamHandler()
+        shdlr.setFormatter(fmt)
 
     logger.addHandler(fhdlr)
+    logger.addHandler(shdlr)
     return logger
