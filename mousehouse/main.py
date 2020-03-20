@@ -5,24 +5,25 @@ import errno
 import logging
 import os
 import time
-from utils.configReader import ConfigReader as cr
+from utils import configReader as cr
 from utils import logger as lg
 from db import dbManager as dbm
 from rest.restMain import app
 
-def _initialize():
+def initialize():
     """
     Initialzation mousehouse.
     Start logging and daemonization
     """
     logger = lg.getLogger(__name__, True)
     logger.info('Initialize mousehouse')
-    #conf = cr.getConfig()
-    
+    #print(cr.conf['logging']['logFlie'])
+   
 
 if __name__=='__main__':
-    dbm.dbSetup()
-    app.run(debug=True)
+    initialize()
+    #dbm.dbSetup()
+    #app.run(debug=True)
 
     #Daemonaze
     """
