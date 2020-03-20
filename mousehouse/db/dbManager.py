@@ -6,7 +6,7 @@ def dbSetup():
     timeOut = 0
 
     dbLogger.info("Start the connection of the mousehouse DB.")
-    while timeOut < 5:
+    while True:
         timeOut += 1
         try:
             conn = mysql.connector.connect(
@@ -16,6 +16,7 @@ def dbSetup():
                     password='mousehouse',
                     database='msDB'
                     )
+            break
         except:
             if timeOut >= 5:
                 dbLogger.error("Time out. Check the settings MySQL and mousehouse DB.")
@@ -27,9 +28,8 @@ def dbSetup():
     cur.execute("""CREATE TABLE IF NOT EXISTS msDB.machines(
             id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
             ip VARBINARY(4) NOT NULL UNIQUE,
-            Status BOOL,
+            status BOOL,
             macAdrr varchar(20) UNIQUE
             )""")
     dbLogger.info("Success the connetion of the mousehou DB")
 
-    cur.execute("show columns from machines")

@@ -11,7 +11,7 @@ def getLogger(name, console=False,logFlie='logs/master.log', level=logging.DEBUG
     if console is True:
         shdlr = logging.StreamHandler()
         shdlr.setFormatter(fmt)
+        logger.addHandler(shdlr)
 
     logger.addHandler(fhdlr)
-    logger.addHandler(shdlr)
     return logger

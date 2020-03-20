@@ -10,10 +10,11 @@ from utils import logger as lg
 from db import dbManager as dbm
 from rest.restMain import app
 
-#Initialzation mousehouse.
-#Start logging and daemonization
 def _initialize():
-    #Start logging
+    """
+    Initialzation mousehouse.
+    Start logging and daemonization
+    """
     logger = lg.getLogger(__name__, True)
     logger.info('Initialize mousehouse')
     #conf = cr.getConfig()
@@ -21,7 +22,7 @@ def _initialize():
 
 if __name__=='__main__':
     dbm.dbSetup()
-    #app.run(debug=True)
+    app.run(debug=True)
 
     #Daemonaze
     """
