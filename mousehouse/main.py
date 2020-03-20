@@ -23,7 +23,7 @@ def initialize():
 if __name__=='__main__':
     initialize()
     #dbm.dbSetup()
-    #app.run(debug=True)
+    app.run(debug=True)
 
     #Daemonaze
     """
