@@ -1,5 +1,5 @@
 import os
-from utils import logger as lg
+from . import logger as lg
 import configparser
 
 class ConfigReader:

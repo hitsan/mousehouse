@@ -5,7 +5,7 @@ import errno
 import logging
 import os
 import time
-from utils import configReader as cr
+from utils.configReader import conf
 from utils import logger as lg
 from db import dbManager as dbm
 from rest.restMain import app
@@ -17,13 +17,13 @@ def initialize():
     """
     logger = lg.getLogger(__name__, True)
     logger.info('Initialize mousehouse')
-    #print(cr.conf['logging']['logFlie'])
+    #print(conf['logging']['logFlie'])
    
 
 if __name__=='__main__':
     initialize()
     #dbm.dbSetup()
-    app.run(debug=True)
+    #app.run(debug=True)
 
     #Daemonaze
     """
