@@ -7,7 +7,7 @@ import os
 import time
 from utils.configReader import conf
 from utils import logger as lg
-from rest.restMain import app
+from api.restMain import app
 from db.dbSetting import engine, Base
 
 def initialize():

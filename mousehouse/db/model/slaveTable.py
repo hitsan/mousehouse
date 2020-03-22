@@ -3,8 +3,8 @@ from sqlalchemy.types import Integer, String, Boolean
 from db.dbSetting import Base
 from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
 
-class Machine(Base):
-    __tablename__ = 'machines'
+class Slave(Base):
+    __tablename__ = 'slaves'
     __table_args__ = {'mysql_engine': 'InnoDB'}
     id = Column('ID', Integer(), primary_key=True, autoincrement=True)
     ip = Column('IP', String(15), unique=True, nullable=False)
@@ -16,9 +16,9 @@ class Machine(Base):
         self.status = status
         self.mac = mac
 
-class MachineSchema(SQLAlchemySchema):
+class SlaveSchema(SQLAlchemySchema):
     class Meta:
-        model = Machine
+        model = Slave
         load_instance = True
 
     id = auto_field()
@@ -26,4 +26,4 @@ class MachineSchema(SQLAlchemySchema):
     status = auto_field()
     mac = auto_field()
 
-machine_schema = MachineSchema(many=True)
+slave_schema = SlaveSchema(many=True)
