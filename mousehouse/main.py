@@ -28,7 +28,6 @@ if __name__=='__main__':
     initialize()
 
     app.run(debug=True)
-
     #Daemonaze
     """
     pid = os.fork()
