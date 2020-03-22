@@ -1,6 +1,6 @@
 from sqlalchemy import Table, Column
 from sqlalchemy.types import Integer, String, Boolean
-from ..dbManager import Base
+from db.dbSetting import Base
 
 class Machine(Base):
     __tablename__ = 'machines'
@@ -8,7 +8,7 @@ class Machine(Base):
     mId = Column('ID', Integer(), primary_key=True, autoincrement=True)
     ip_addr = Column('IP', String(15), unique=True, nullable=False)
     status = Column('Status', Boolean)
-    mac_addr = Column('Mac', String(255))
+    mac_addr = Column('Mac', String(255),unique=True)
 
     def __init__(self, ip_addr, status=None, mac_addr=None):
         self.ip_addr = ip_addr

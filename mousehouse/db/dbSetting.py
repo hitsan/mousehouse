@@ -7,11 +7,13 @@ dbUrl = 'mysql+mysqlconnector://%s:%s@%s/%s?charset=utf8' % (
     "mousehouse",
     "mousehouse",
     "localhost",
-    "msDB",)
-engine = create_engine(dbUrl, encoding = "utf-8", echo=True)
+    "msDB")
+#engine = create_engine(dbUrl, encoding = "utf-8", echo=True)
+engine = create_engine(dbUrl, encoding = "utf-8")
 Session = sessionmaker(
         autocommit = False,
         autoflush = True,        
         bind = engine)
+
 session = Session()
 Base = declarative_base()

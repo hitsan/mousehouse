@@ -8,7 +8,7 @@ import time
 from utils.configReader import conf
 from utils import logger as lg
 from rest.restMain import app
-from db.dbManager import engine, Base
+from db.dbSetting import engine, Base
 
 def initialize():
     """
@@ -19,18 +19,15 @@ def initialize():
     logger.info('Initialize mousehouse')
 
     Base.metadata.create_all(bind=engine)
+    #app.run(debug=True)
+    #app.run()
     #print(conf['logging']['logFlie'])
    
 
 if __name__=='__main__':
-    #initialize()
-    """
-    machien = Machine(ip_addr="192.168.11.2", mac_addr="mac")
-    session.add(machien)
-    session.commit()
-    """
+    initialize()
 
-    #app.run(debug=True)
+    app.run(debug=True)
 
     #Daemonaze
     """
