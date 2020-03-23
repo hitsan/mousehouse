@@ -1,6 +1,9 @@
 import logging
 
 def getLogger(name, console=False,logFlie='logs/master.log', level=logging.DEBUG):
+    """
+    Sets the logger configuration and returns the logger.
+    """
     logger = logging.getLogger(name)
     logger.setLevel(level)
 

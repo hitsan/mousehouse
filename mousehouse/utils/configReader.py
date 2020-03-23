@@ -3,7 +3,13 @@ from . import logger as lg
 import configparser
 
 class ConfigReader:
+    """
+    Read the config.ini and generate a configuration reference.
+    """
     def __init__(self):
+        """
+        Read the config.ini
+        """
         logger = lg.getLogger(__name__, True)
         self._conf = configparser.ConfigParser()
         try:
@@ -20,6 +26,9 @@ class ConfigReader:
 
     @property
     def getConfig(self):
+        """
+        Retrun the configuration reference
+        """
         return self._conf
 
 conf = ConfigReader().getConfig

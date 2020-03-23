@@ -15,6 +15,9 @@ class Slave(Base):
     mac = Column('MAC_ADDRESS', String(255),unique=True,server_default=None)
 
 class SlaveSchema(SQLAlchemySchema):
+    """
+    Slave Table Schema.
+    """
     class Meta:
         model = Slave
         load_instance = True
