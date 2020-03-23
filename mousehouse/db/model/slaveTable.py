@@ -4,6 +4,9 @@ from db.dbSetting import Base
 from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
 
 class Slave(Base):
+    """
+    Model Slave Table.
+    """
     __tablename__ = 'slave'
     __table_args__ = {'mysql_engine': 'InnoDB'}
     id = Column('ID', Integer(), primary_key=True, autoincrement=True)
@@ -25,6 +28,3 @@ class SlaveSchema(SQLAlchemySchema):
     ip = auto_field()
     status = auto_field()
     mac = auto_field()
-
-#slave_schema = SlaveSchema(many=True)
-#slave_schema = SlaveSchema()

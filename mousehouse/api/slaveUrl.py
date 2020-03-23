@@ -1,7 +1,8 @@
 import re
+import json
 from ipaddress import *
 import subprocess as sbp
-from flask import Blueprint, jsonify, make_response, abort
+from flask import Blueprint, jsonify, make_response, abort, Response
 from flask_restful import Resource, request
 from utils import logger as lg
 from db.dbSetting import session
@@ -16,14 +17,13 @@ class Slaves(Resource):
     def get(self, id=None):
         """
         Show slaves information in DB.
-        If DB is empty, return empty list.
         """
         if id is None:
             slaves = session.query(Slave)
             ret = SlaveSchema(many=True).dump(slaves)
             logger.info("Get all slaves information.")
-        elif id > 0:
-            slave = session.query(Slave).get(id)
+        else:
+            slave = _hasId(id)
             ret = SlaveSchema().dump(slave)
             logger.info("Get ID %d slave information." % id)
         
@@ -52,14 +52,72 @@ class Slaves(Resource):
                     macaddr = None
                     status = False
         except KeyError:
-                logger.error("POST request faile. Check your command.")
-                abort(404)
+                _abort404("POST request faile. Check your command.")
 
         slave = Slave(ip=ip, mac=macaddr, status=status)
         session.add(slave)
         session.commit()
         logger.info("POST request success. Add slave in DB.")
+
+    def put(self, id=None):
+        """
+        Update server information(IP address and MAC address).
+        """
+        logger.info("PUT request")
+        if id is None:
+            _abort404("No ID is designated. Designate slave ID.")
+        try:
+            slave = _checkIPandMac(id=id, **request.json)
+        except TypeError:
+            _abort404("Illegal parameter. Check your command!")
+        session.add(slave)
+        session.commit()
         return 200
+
+def _checkIPandMac(id, ip=None, mac=None):
+    """
+    Check IP and MAC address.
+    If there is no problem, return the slave.
+    """
+    if ip == None and mac == None:
+        _abort404("Illegal parameter. Check your command.")
+    slave = _hasId(id)
+    if ip is not None:
+        if _isNomalIP(ip) and (_isOnlyOneIP(ip) ^ _isSameIP(id, ip)):
+            slave.ip = ip
+        else:
+            _abort404("Illegal IP address. Check your command.")
+    if mac is not None:
+        if _isNomalMac(mac) and (_isOnlyOneMac(mac) ^ _isSameMac(id, mac)):
+            slave.mac = mac
+        else:
+            _abort404("Illegal MAC address. Check your command.")
+    return slave
+
+def _hasId(id):
+    """
+    Check if there is a slave with the specified ID.
+    Returns if slave exists, otherwise respond 404.
+    """
+    slave = session.query(Slave).get(id)
+    if slave is None:
+        _abort404("Not found ID %d slave." % id)
+    return slave
+
+def _isSameIP(id, ip):
+    """
+    Check the correspondence between ID and IP address
+    """
+    slave = session.query(Slave).get(id)
+    logger.info("IP address is %s" % slave.ip)
+    return True if ip == slave.ip else False
+
+def _isSameMac(id, mac):
+    """
+    Check the correspondence between ID and IP address
+    """
+    slave = session.query(Slave).get(id)
+    return True if mac == slave.mac else False
 
 def _isNomalIP(ip):
     """
@@ -73,6 +131,13 @@ def _isNomalIP(ip):
         logger.error("%s is NOT normal IP address." % str(ip))
         return False
 
+def _isNomalMac(mac):
+    """
+    Check if the MAC address is normal.
+    """
+    mac_format = "[0-9a-f]{2}([-:])[0-9a-f]{2}(:[0-9a-f]{2}){4}$"
+    return True if re.match(mac_format, mac.lower()) else False
+
 def _isOnlyOneIP(ip):
     """
     Check if the IP address is duplicated.
@@ -84,3 +149,19 @@ def _isOnlyOneIP(ip):
     except NoResultFound:
         logger.info("%s is NOT duplicated." % str(ip))
         return True
+
+def _isOnlyOneMac(mac):
+    """
+    Check if the MAC address is duplicated.
+    """
+    try:
+        session.query(Slave).filter_by(mac=mac).one()
+        logger.info("%s is duplicated." % str(mac))
+        return False
+    except NoResultFound:
+        logger.info("%s is NOT duplicated." % str(mac))
+        return True
+
+def _abort404(word):
+    logger.error(word)
+    abort(404, word)

@@ -3,9 +3,15 @@ from flask_restful import Resource, Api
 from .slaveUrl import *
 from .masterUrl import *
 
-#mousehouse version
 class Root(Resource):
+    """
+    mousehouse information
+    
+    """
     def get(self):
+        """
+        Get mousehouse information
+        """
         return jsonify({
             "@odata.id" : "/mousehouse",
             "Version" : "0.1",
@@ -23,11 +29,14 @@ class Root(Resource):
 app = Flask(__name__)
 api = Api(app, '/mousehouse')
 api.add_resource(Root, '/')
-#Master's URL
+"""
+Master's URL
+"""
 api.add_resource(Master, '/master')
 api.add_resource(Status, '/master/status')
 api.add_resource(MasterLogs, '/master/masterlogs')
 
-#Machines's URL
+"""
+Machines's URL
+"""
 api.add_resource(Slaves, '/slaves','/slaves/<int:id>')
-#api.add_resource(Slaves, '/slaves/')
