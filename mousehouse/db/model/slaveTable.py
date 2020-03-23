@@ -11,13 +11,8 @@ class Slave(Base):
     __table_args__ = {'mysql_engine': 'InnoDB'}
     id = Column('ID', Integer(), primary_key=True, autoincrement=True)
     ip = Column('IP', String(15), unique=True, nullable=False)
-    status = Column('Status', Boolean)
-    mac = Column('MAC_ADDRESS', String(255),unique=True)
-
-    def __init__(self, ip, status=None, mac=None):
-        self.ip = ip
-        self.status = status
-        self.mac = mac
+    status = Column('Status', Boolean,server_default=None)
+    mac = Column('MAC_ADDRESS', String(255),unique=True,server_default=None)
 
 class SlaveSchema(SQLAlchemySchema):
     class Meta:

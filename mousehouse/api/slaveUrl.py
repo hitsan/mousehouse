@@ -32,31 +32,44 @@ class Slaves(Resource):
             "slaves" : ret
         }))
          
-    def post(self):
+    def post(self, id=None):
         """
         Add a monitoring server.
         Post the IP address and add server information (IP, MAC address, and status) to the DB.
         """
         logger.info("POST request")
+        if id is not None and session.query(Slave).get(id) is not None:
+            _abort404("This ID is exist. Change ID.")
         s_data = request.json
         try:
             ip = s_data["ip"]
-            ping = 'ping -c1 ' + str(ip)
-            arp = 'arp -a ' + str(ip)
-            if _isNomalIP(ip) and _isOnlyOneIP(ip):
-                if sbp.call(ping.split(),stdout = sbp.DEVNULL,stderr = sbp.DEVNULL) == 0:
-                    line = sbp.check_output(arp.split())
-                    macaddr = str(line).split(' ')[3]
-                    status = True
-                else:
-                    macaddr = None
-                    status = False
+            ping = 'ping -c1 ' + ip
+            arp = 'arp -a ' + ip
+            if not(_isNomalIP(ip) and _isOnlyOneIP(ip)):
+                _abort404("Illegal IP address. Check IP Address.")
+            if sbp.call(ping.split(),stdout = sbp.DEVNULL,stderr = sbp.DEVNULL) == 0:
+                logger.info("Found the slave which has %s." % ip)
+                line = sbp.check_output(arp.split())
+                macaddr = str(line).split(' ')[3]
+                status = True
+            else:
+                logger.info("Not found the slave which has %s. Set MAC address and status are NULL" % ip)
+                macaddr = None
+                status = False
         except KeyError:
                 _abort404("POST request faile. Check your command.")
-        slave = Slave(ip=ip, mac=macaddr, status=status)
+        if id is not None:
+            slave = Slave(id=id, ip=ip, mac=macaddr, status=status)
+        else:
+            slave = Slave(ip=ip, mac=macaddr, status=status)
         session.add(slave)
         session.commit()
-        logger.info("POST request success. Add slave in DB.")
+        logger.info("Success POST request. Add the slave in DB.")
+        ret = _hasId(slave.id)
+        return make_response(jsonify({
+            "@odata.id":"/mousehouse/slaves",
+            "slaves" : SlaveSchema().dump(ret)
+        }))
 
     def put(self, id=None):
         """
@@ -71,7 +84,12 @@ class Slaves(Resource):
             _abort404("Illegal parameter. Check your command!")
         session.add(slave)
         session.commit()
-        return 200
+        logger.info("Success PUT request. Update the slave.")
+        ret = _hasId(slave.id)
+        return make_response(jsonify({
+            "@odata.id":"/mousehouse/slaves",
+            "slaves" : SlaveSchema().dump(ret)
+        }))
     
     def delete(self, id=None):
         """
@@ -135,10 +153,10 @@ def _isNomalIP(ip):
     """
     try:
         if IPv4Address(ip) is not None:
-            logger.info("%s is normal IP address." % str(ip))
+            logger.info("%s is normal IP address." % ip)
             return True
     except AddressValueError:
-        logger.error("%s is NOT normal IP address." % str(ip))
+        logger.error("%s is NOT normal IP address." % ip)
         return False
 
 def _isNomalMac(mac):
@@ -154,10 +172,10 @@ def _isOnlyOneIP(ip):
     """
     try:
         session.query(Slave).filter_by(ip=ip).one()
-        logger.info("%s is duplicated." % str(ip))
+        logger.info("%s is duplicated." % ip)
         return False
     except NoResultFound:
-        logger.info("%s is NOT duplicated." % str(ip))
+        logger.info("%s is NOT duplicated." % ip)
         return True
 
 def _isOnlyOneMac(mac):
@@ -166,10 +184,10 @@ def _isOnlyOneMac(mac):
     """
     try:
         session.query(Slave).filter_by(mac=mac).one()
-        logger.info("%s is duplicated." % str(mac))
+        logger.info("%s is duplicated." % mac)
         return False
     except NoResultFound:
-        logger.info("%s is NOT duplicated." % str(mac))
+        logger.info("%s is NOT duplicated." % mac)
         return True
 
 def _abort404(word):
