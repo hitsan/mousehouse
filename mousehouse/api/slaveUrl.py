@@ -53,7 +53,6 @@ class Slaves(Resource):
                     status = False
         except KeyError:
                 _abort404("POST request faile. Check your command.")
-
         slave = Slave(ip=ip, mac=macaddr, status=status)
         session.add(slave)
         session.commit()
@@ -71,6 +70,17 @@ class Slaves(Resource):
         except TypeError:
             _abort404("Illegal parameter. Check your command!")
         session.add(slave)
+        session.commit()
+        return 200
+    
+    def delete(self, id=None):
+        """
+        Delete the monitoring server.
+        """
+        if id is None:
+            _abort404("No ID is designated. Designate slave ID.")
+        slave = _hasId(id)
+        session.delete(slave)
         session.commit()
         return 200
 
