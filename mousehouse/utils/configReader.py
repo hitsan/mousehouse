@@ -1,5 +1,5 @@
 import os
-from . import logger as lg
+import sys
 import configparser
 
 class ConfigReader:
@@ -10,19 +10,17 @@ class ConfigReader:
         """
         Read the config.ini
         """
-        logger = lg.getLogger(__name__, True)
         self._conf = configparser.ConfigParser()
         try:
             home = os.environ['mousehouse_home']
             configPath =  home + '/config/config.ini'
             self._conf.read(configPath, encoding='utf-8')
         except KeyError:  
-            logger.error("Please set mousehouse_home")
+            print("Please set mousehouse_home", file=sys.stderr)
             exit(0)
         except TypeError:
-            logger.error("Not found config.ini file. Please make config.ini file in config directory")
+            print("Not found config.ini file. Please make config.ini file in config directory", file=sys.stderr)
             exit(0)
-        logger.info("Read the config.ini")
 
     @property
     def getConfig(self):
