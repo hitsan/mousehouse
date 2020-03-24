@@ -43,7 +43,7 @@ class Slaves(Resource):
         s_data = request.json
         try:
             ip = s_data["ip"]
-            ping = 'ping -c1 ' + ip
+            ping = 'ping -c1 -w1' + ip
             arp = 'arp -a ' + ip
             if not(_isNomalIP(ip) and _isOnlyOneIP(ip)):
                 _abort404("Illegal IP address. Check IP Address.")
