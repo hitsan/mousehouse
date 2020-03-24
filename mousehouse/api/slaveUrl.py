@@ -1,10 +1,10 @@
 import re
 import json
 from ipaddress import *
-import subprocess as sbp
 from flask import Blueprint, jsonify, make_response, abort, Response
 from flask_restful import Resource, request
 from utils import logger as lg
+from utils.connectIP import pingIP, arpIP, kickSlave
 from db.dbSetting import session
 from db.model.slaveTable import Slave, SlaveSchema
 from sqlalchemy.orm.exc import NoResultFound
@@ -28,7 +28,7 @@ class Slaves(Resource):
             logger.info("Get ID %d slave information." % id)
         
         return make_response(jsonify({
-            "@odata.id":"/mousehouse/slaves",
+            "@url":"/mousehouse/slaves",
             "slaves" : ret
         }))
          
@@ -37,22 +37,23 @@ class Slaves(Resource):
         Add a monitoring server.
         Post the IP address and add server information (IP, MAC address, and status) to the DB.
         """
-        logger.info("POST request")
+        logger.info("Add slave request")
         if id is not None and session.query(Slave).get(id) is not None:
-            _abort404("This ID is exist. Change ID.")
+            _abort404("This ID is exist. Cannot add the slave.")
         s_data = request.json
         try:
             ip = s_data["ip"]
-            ping = 'ping -c1 -w1' + ip
-            arp = 'arp -a ' + ip
             if not(_isNomalIP(ip) and _isOnlyOneIP(ip)):
                 _abort404("Illegal IP address. Check IP Address.")
-            if sbp.call(ping.split(),stdout = sbp.DEVNULL,stderr = sbp.DEVNULL) == 0:
+            if pingIP(ip) == 0:
+                #reachable
                 logger.info("Found the slave which has %s." % ip)
-                line = sbp.check_output(arp.split())
-                macaddr = str(line).split(' ')[3]
+                macaddr = arpIP(ip)
+                if _isNomalMac(macaddr) == False:
+                    macaddr = None
                 status = True
             else:
+                #unreachable
                 logger.info("Not found the slave which has %s. Set MAC address and status are NULL" % ip)
                 macaddr = None
                 status = False
@@ -67,7 +68,7 @@ class Slaves(Resource):
         logger.info("Success POST request. Add the slave in DB.")
         ret = _hasId(slave.id)
         return make_response(jsonify({
-            "@odata.id":"/mousehouse/slaves",
+            "@url":"/mousehouse/slaves",
             "slaves" : SlaveSchema().dump(ret)
         }))
 
@@ -87,7 +88,7 @@ class Slaves(Resource):
         logger.info("Success PUT request. Update the slave.")
         ret = _hasId(slave.id)
         return make_response(jsonify({
-            "@odata.id":"/mousehouse/slaves",
+            "@url":"/mousehouse/slaves",
             "slaves" : SlaveSchema().dump(ret)
         }))
     
@@ -101,6 +102,46 @@ class Slaves(Resource):
         session.delete(slave)
         session.commit()
         return 200
+
+class SlaveAction(Resource):
+    """
+    Define Slave action.
+    """
+    def get(self, id=None):
+        """
+        Show slave action lists.
+        TODO Implement the script execution function.
+        """
+        slave = _hasId(id)
+        action_list = {"power": ["on"]}
+        logger.info("Get action list." )
+        
+        return make_response(jsonify({
+            "@url":"/mousehouse/Slaves/%s/Action" % id,
+            "Action" : action_list
+        }))
+
+class SlavePower(Resource):
+    """
+    Define Slave Power action.
+    """
+    def post(self, id=None):
+        """
+        Control slave power
+        TODO Implement reset and shutdown.
+        """
+        data = request.json
+        slave = _hasId(id)
+        try:
+            if data["power"] == "on":
+                if pingIP(slave.ip) == 0:
+                    _abort404("ID %s is alreadt booted.")
+                if slave.mac == None:
+                    _abort404("MAC address is not define.")
+                kickSlave(slave.mac)  
+        except KeyError:
+            _abort404("Illegal Power parameter.")
+        return 202
 
 def _checkIPandMac(id, ip=None, mac=None):
     """

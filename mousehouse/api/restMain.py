@@ -16,27 +16,25 @@ class Root(Resource):
             "@odata.id" : "/mousehouse",
             "Version" : "0.1",
             "Master" : {
-                "@odata.id":"/mousehouse/master"
+                "@odata.id":"/mousehouse/Master"
             },
             "Machines" : {
-                "@odata.id":"/mousehouse/slaves"
-            },
-            "LogService" : {
-                "@odata.id":"/mousehouse/logservice"
+                "@odata.id":"/mousehouse/Slaves"
             }
         })
 
 app = Flask(__name__)
 api = Api(app, '/mousehouse')
-api.add_resource(Root, '/')
+api.add_resource(Root, '')
 """
 Master's URL
 """
-api.add_resource(Master, '/master')
-api.add_resource(Status, '/master/status')
-api.add_resource(MasterLogs, '/master/masterlogs')
+api.add_resource(Master, '/Master')
+api.add_resource(MasterAction, '/Master/Action')
 
 """
-Machines's URL
+Slaves's URL
 """
-api.add_resource(Slaves, '/slaves','/slaves/<int:id>')
+api.add_resource(Slaves, '/Slaves','/Slaves/<int:id>')
+api.add_resource(SlaveAction, '/Slaves/<int:id>/Action')
+api.add_resource(SlavePower, '/Slaves/<int:id>/Action/Power')

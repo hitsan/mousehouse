@@ -1,32 +1,27 @@
 from flask import Blueprint, jsonify
 from flask_restful import Resource
+from utils.configReader import conf
 
 class Master(Resource):
+    """
+    Master is a monitering server.
+    """
+    def get(self):
+        """
+        Show Master information
+        """
+        return jsonify({
+            "@url" : "/mousehouse/Master",
+            "@ip" : conf["master"]["ip"]
+        })
+
+class MasterAction(Resource):
     def get(self):
         return jsonify({
-            "@odata.id" : "/mousehouse/master",
-            "Status":{
-                "@odata" : "/mousehouse/master/status"
-            },
-            "IP" : "127.0.0.1",
-            "MasterLogs" : {
-                "@odata" : "/mousehouse/master/masterlogs"
+            "@url" : "/mousehouse/Master/Action",
+            "Action" : {
+                "Power":"on",
+                "Logservice":"send log",
+                "Script":"id"
             }
-        })
-
-class Status(Resource):
-    def get(self):
-        return jsonify({
-            "@odata.id" : "/mousehouse/master/status/",
-            "Status": "On",
-            "Memo" : "If you want to shutdown or reboot, you use POST message."
-        })
-    def post(self):
-        #coding algorym shutdonw or reboot
-        pass
-
-class MasterLogs(Resource):
-    def get(self):
-        return jsonify({
-            "@odata" : "/mousehouse/master/masterlogs/"
         })

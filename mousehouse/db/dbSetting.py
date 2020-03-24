@@ -9,10 +9,10 @@ Connect DB server and make session.
 """
 logger = lg.getLogger(__name__, True)
 dbUrl = 'mysql+mysqlconnector://%s:%s@%s/%s?charset=utf8' % (
-    "mousehouse",
-    "mousehouse",
-    conf["master"]["ip"],
-    "msDB")
+    conf["db"]["user"],
+    conf["db"]["pass"],
+    conf["db"]["ip"],
+    conf["db"]["name"])
 engine = create_engine(dbUrl, encoding = "utf-8")
 Session = sessionmaker(
         autocommit = False,
