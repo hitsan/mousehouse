@@ -5,17 +5,17 @@ import errno
 import logging
 import os
 import time
-from utils.configReader import conf
-from utils.logger import getLogger
-from api.restMain import app
-from db.dbSetting import engine, Base
+from utils.config_reader import conf
+from utils.logger import get_logger
+from api.rest import app
+from db.setting import engine, Base
 
 def initialize():
     """
     Initialzation mousehouse.
     Start logging and setup DB.
     """
-    logger = getLogger(__name__, True)
+    logger = get_logger(__name__, True)
     logger.info('Initialize mousehouse')
 
     Base.metadata.create_all(bind=engine)   

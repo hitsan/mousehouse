@@ -1,7 +1,7 @@
 from flask import Flask, abort, request, jsonify, Blueprint
 from flask_restful import Resource, Api
-from .slaveUrl import *
-from .masterUrl import *
+from .slave_url import *
+from .master_url import *
 
 class Root(Resource):
     """

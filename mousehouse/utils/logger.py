@@ -1,15 +1,15 @@
 import logging
 import sys
 import os
-from .configReader import conf
+from .config_reader import conf
 
-def getLogger(name, console=False):
+def get_logger(name, console=False):
     """
     Sets the logger configuration and returns the logger.
     """
     #Set logging level
     logger = logging.getLogger(name)
-    level = _getLevel(conf)
+    level = _get_level(conf)
     logger.setLevel(level)
 
     #Set format
@@ -26,7 +26,7 @@ def getLogger(name, console=False):
     logger.addHandler(fhdlr)
     return logger
 
-def _getLevel(conf):
+def _get_level(conf):
     """
     Get logging level from config.
     """

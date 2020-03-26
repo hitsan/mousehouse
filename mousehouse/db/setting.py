@@ -1,13 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from utils import logger as lg
-from utils.configReader import conf
+from utils.logger import get_logger
+from utils.config_reader import conf
 
 """
 Connect DB server and make session.
 """
-logger = lg.getLogger(__name__, True)
+logger = get_logger(__name__, True)
 dbUrl = 'mysql+mysqlconnector://%s:%s@%s/%s?charset=utf8' % (
     conf["db"]["user"],
     conf["db"]["pass"],

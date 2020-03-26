@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_restful import Resource
-from utils.configReader import conf
+from utils.config_reader import conf
 
 class Master(Resource):
     """

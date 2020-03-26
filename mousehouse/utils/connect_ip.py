@@ -1,9 +1,9 @@
 import subprocess
 import socket
 import binascii
-from utils.logger import getLogger
+from utils.logger import get_logger
 
-logger = getLogger(__name__)
+logger = get_logger(__name__)
 def ping_ip(ip):
     """
     Check the IP address is reachable.
@@ -30,13 +30,13 @@ def kick_slave(mac):
     broadcast = '255.255.255.255'
     port = 7
 
-    macadd = ''.join(mac.split(':'))
-    mdata = 'FF' * 6 + macadd * 16
-    mdata = binascii.unhexlify(mdata)
+    mac_add = ''.join(mac.split(':'))
+    m_data = 'FF' * 6 + mac_add * 16
+    m_data = binascii.unhexlify(m_data)
 
     con = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     con.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    con.sendto(mdata, (broadcast, port))
+    con.sendto(m_data, (broadcast, port))
     logger.info("Send magic packet to %s" % mac)
  
     con.close()
