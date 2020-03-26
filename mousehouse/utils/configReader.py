@@ -1,6 +1,7 @@
 import os
 import sys
 import configparser
+import subprocess
 
 class ConfigReader:
     """
@@ -12,9 +13,9 @@ class ConfigReader:
         """
         self._conf = configparser.ConfigParser()
         try:
-            home = os.environ['mousehouse_home']
-            configPath =  home + '/config/config.ini'
-            self._conf.read(configPath, encoding='utf-8')
+            path = os.path.abspath(__file__)
+            config_path = path[:-32] + 'config/config.ini'
+            self._conf.read(config_path, encoding='utf-8')
         except KeyError:  
             print("Please set mousehouse_home", file=sys.stderr)
             exit(0)

@@ -1,16 +1,21 @@
 import logging
+import sys
+import os
 from .configReader import conf
 
-def getLogger(name, console=False,logFlie='logs/master.log'):
+def getLogger(name, console=False):
     """
     Sets the logger configuration and returns the logger.
     """
+    #Set logging level
     logger = logging.getLogger(name)
     level = _getLevel(conf)
     logger.setLevel(level)
 
+    #Set format
     fmt = logging.Formatter("%(asctime)s:%(name)s:%(levelname)s:%(message)s")
-
+    path = os.path.abspath(__file__)
+    logFlie = path[:-26] + 'logs/master.log'
     fhdlr = logging.FileHandler(logFlie)
     fhdlr.setFormatter(fmt)
     if console is True:
@@ -22,11 +27,14 @@ def getLogger(name, console=False,logFlie='logs/master.log'):
     return logger
 
 def _getLevel(conf):
+    """
+    Get logging level from config.
+    """
+    level = {"DEBUG":logging.DEBUG, "INFO":logging.INFO, "WARNING":logging.WARNING,
+    "WARN":logging.WARN, "CRITICAL":logging.CRITICAL, "ERROR":logging.ERROR}
     try:
-        level = {"DEBUG":logging.DEBUG, "INFO":logging.INFO, "WARNING":logging.WARNING,\
-         "WARN":logging.WARN, "CRITICAL":logging.CRITICAL, "ERROR":logging.ERROR}
+        config = conf["logging"]["level"].upper()
     except:
         print("Logging level is not define.", file=sys.stderr)
-        return logging.INFO
-    config = conf["logging"]["level"].upper()
+        return logging.WARN
     return level[config]

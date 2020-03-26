@@ -2,6 +2,7 @@ from sqlalchemy import Table, Column
 from sqlalchemy.types import Integer, String, Boolean
 from db.dbSetting import Base
 from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
+from marshmallow import Schema, fields
 
 class Slave(Base):
     """
@@ -18,11 +19,23 @@ class SlaveSchema(SQLAlchemySchema):
     """
     Slave Table Schema.
     """
+    uppername = fields.Function(lambda obj: obj.name.upper())
+
+    class Meta:
+        fields = ("id", "ip", "mac", "status")
+        model = Slave
+        load_instance = True
+        ordered = True
+"""
+class SlaveSchema(SQLAlchemySchema):
+    Slave Table Schema.
     class Meta:
         model = Slave
         load_instance = True
+        #ordered = True
 
     id = auto_field()
     ip = auto_field()
     status = auto_field()
     mac = auto_field()
+"""

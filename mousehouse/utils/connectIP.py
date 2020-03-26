@@ -1,17 +1,17 @@
 import subprocess
 import socket
 import binascii
-from utils import logger as lg
+from utils.logger import getLogger
 
-logger = lg.getLogger(__name__)
-def pingIP(ip):
+logger = getLogger(__name__)
+def ping_ip(ip):
     """
     Check the IP address is reachable.
     """
     com = 'ping -c1 -w1 ' + ip
     return subprocess.call(com.split(),stdout = subprocess.DEVNULL,stderr = subprocess.DEVNULL)
 
-def arpIP(ip):
+def arp_ip(ip):
     """
     Return MAC Address from IP
     """
@@ -23,7 +23,7 @@ def arpIP(ip):
         logger.error("Can not get MAC address.")
         return None
 
-def kickSlave(mac):
+def kick_slave(mac):
     """
     Power on slave by sending magic packet
     """

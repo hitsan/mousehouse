@@ -17,11 +17,15 @@ class Master(Resource):
 
 class MasterAction(Resource):
     def get(self):
+        """
+        Show Master action
+        TODO implement actions
+        """
         return jsonify({
             "@url" : "/mousehouse/Master/Action",
             "Action" : {
-                "Power":"on",
-                "Logservice":"send log",
-                "Script":"id"
+                "Power":"on"
+                #"Logservice":"send log",
+                #"Script":"id"
             }
         })
