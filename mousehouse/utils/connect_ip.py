@@ -23,9 +23,9 @@ def arp_ip(ip):
         logger.error("Can not get MAC address.")
         return None
 
-def kick_slave(mac):
+def kick_mouse(mac):
     """
-    Power on slave by sending magic packet
+    Power on mouse by sending magic packet
     """
     broadcast = '255.255.255.255'
     port = 7

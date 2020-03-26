@@ -1,31 +1,31 @@
 import json
 from flask_restful import Resource, request
 from utils.logger import get_logger
-from utils.connect_ip import ping_ip, arp_ip, kick_slave
+from utils.connect_ip import ping_ip, arp_ip, kick_mouse
 from db.setting import session
-from db.model.slave_table import Slave, SlaveSchema
+from db.model.mouse_table import Mouse, MouseSchema
 from .url_api import *
 
 logger = get_logger(__name__)
-class Slaves(Resource):
+class Mice(Resource):
     """
-    Slaves are monitored servers.
+    Mice are monitored servers.
     """
     def get(self, id=None):
         """
-        Show slaves information in DB.
+        Show mice information in DB.
         """
         if id is None:
-            slaves = session.query(Slave)
-            slave_list = SlaveSchema(many=True).dump(slaves)
-            logger.info("Get all slaves information.")
+            mice = session.query(Mouse)
+            mice_list = MouseSchema(many=True).dump(mice)
+            logger.info("Get all mice information.")
         else:
-            slave = has_id(id)
-            slave_list = SlaveSchema().dump(slave)
-            logger.info("Get ID %d slave information." % id)
+            mice = has_id(id)
+            mice_list = MouseSchema().dump(mice)
+            logger.info("Get ID %d mice information." % id)
         dic = {
-            "@url":"/mousehouse/slaves",
-            "slaves" : slave_list
+            "@url":"/mousehouse/Mice",
+            "Mice" : mice_list
         }
         return format_response(dic)
          
@@ -34,39 +34,39 @@ class Slaves(Resource):
         Add a monitoring server.
         Post the IP address and add server information (IP, MAC address, and status) to the DB.
         """
-        logger.info("Add slave request")
-        if id is not None and session.query(Slave).get(id) is not None:
-            abort_404("This ID is exist. Cannot add the slave.")
+        logger.debug("Add mice request")
+        if id is not None and session.query(Mouse).get(id) is not None:
+            abort_404("This ID is exist. Cannot add the mice.")
         s_data = request.json
         try:
             ip = s_data["ip"]
             if not(is_nomal_ip(ip) and is_onlyone_ip(ip)):
-                abort_404("Illegal IP address. Check IP Address.")
+                abort_404("Illegal or duplicated IP address. Check IP Address.")
             if ping_ip(ip) == 0:
                 #reachable
-                logger.info("Found the slave which has %s." % ip)
+                logger.debug("Found the mice which has %s." % ip)
                 mac_addr = arp_ip(ip)
                 if is_nomal_mac(mac_addr) == False:
                     mac_addr = None
                 status = True
             else:
                 #unreachable
-                logger.info("Not found the slave which has %s. Set MAC address and status are NULL" % ip)
+                logger.debug("Not found the mice which has %s. Set MAC address and status are NULL" % ip)
                 mac_addr = None
                 status = False
         except KeyError:
                 abort_404("POST request faile. Check your command.")
         if id is not None:
-            slave = Slave(id=id, ip=ip, mac=mac_addr, status=status)
+            mice = Mouse(id=id, ip=ip, mac=mac_addr, status=status)
         else:
-            slave = Slave(ip=ip, mac=mac_addr, status=status)
-        session.add(slave)
+            mice = Mouse(ip=ip, mac=mac_addr, status=status)
+        session.add(mice)
         session.commit()
-        logger.info("Success POST request. Add the slave in DB.")
-        ret = has_id(slave.id)
+        logger.info("Success POST request. Add the mice in DB.")
+        ret = has_id(mice.id)
         dic = {
-            "@url":"/mousehouse/slaves",
-            "slaves" : SlaveSchema().dump(ret)
+            "@url":"/mousehouse/Mice",
+            "Mice" : MouseSchema().dump(ret)
         }
         return format_response(dic, 201)
 
@@ -74,20 +74,20 @@ class Slaves(Resource):
         """
         Update server information(IP address and MAC address).
         """
-        logger.info("PUT request")
+        logger.debug("PUT request")
         if id is None:
-            abort_404("No ID is designated. Designate slave ID.")
+            abort_404("No ID is designated. Designate mice ID.")
         try:
-            slave = check_ip_mac(id=id, **request.json)
+            mice = check_ip_mac(id=id, **request.json)
         except TypeError:
             abort_404("Illegal parameter. Check your command!")
-        session.add(slave)
+        session.add(mice)
         session.commit()
-        logger.info("Success PUT request. Update the slave.")
-        ret = has_id(slave.id)
+        logger.info("Success PUT request. Update the mice.")
+        ret = has_id(mice.id)
         dic = {
-            "@url":"/mousehouse/slaves",
-            "slaves" : SlaveSchema().dump(ret)
+            "@url":"/mousehouse/Mice",
+            "Mice" : MouseSchema().dump(ret)
         }
         return format_response(dic, 201)
     
@@ -96,48 +96,49 @@ class Slaves(Resource):
         Delete the monitoring server.
         """
         if id is None:
-            abort_404("No ID is designated. Designate slave ID.")
-        slave = has_id(id)
-        session.delete(slave)
+            abort_404("No ID is designated. Designate mice ID.")
+        mice = has_id(id)
+        session.delete(mice)
         session.commit()
+        logger.info("Success delete ID %s mice." %id)
         return 200
 
-class SlaveAction(Resource):
+class MiceAction(Resource):
     """
-    Define Slave action.
+    Define mice action.
     """
     def get(self, id=None):
         """
-        Show slave action lists.
+        Show mice action lists.
         TODO Implement the script execution function.
         """
-        slave = has_id(id)
+        mice = has_id(id)
         action_list = {"power": ["on"]}
         logger.info("Get action list." )
         dic = {
-            "@url":"/mousehouse/Slaves/%s/Action" % id,
+            "@url":"/mousehouse/Mice/%s/Action" % id,
             "Action" : action_list
         }
         return format_response(dic)
 
-class SlavePower(Resource):
+class MicePower(Resource):
     """
-    Define Slave Power action.
+    Define mice Power action.
     """
     def post(self, id=None):
         """
-        Control slave power
+        Control mice power
         TODO Implement reset and shutdown.
         """
         data = request.json
-        slave = has_id(id)
+        mice = has_id(id)
         try:
             if data["power"] == "on":
-                if ping_ip(slave.ip) == 0:
+                if ping_ip(mice.ip) == 0:
                     abort_404("ID %s is alreadt booted.")
-                if slave.mac == None:
+                if mice.mac == None:
                     abort_404("MAC address is not define.")
-                kick_slave(slave.mac)  
+                kick_mouse(mice.mac)  
         except KeyError:
             abort_404("Illegal Power parameter.")
         return 202

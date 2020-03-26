@@ -4,7 +4,6 @@ import sys
 import errno
 import logging
 import os
-import time
 from utils.config_reader import conf
 from utils.logger import get_logger
 from api.rest import app
@@ -22,8 +21,11 @@ def initialize():
 
 if __name__=='__main__':
     initialize()
-    #app.run(debug=True, host=conf["master"]["ip"], port= conf["master"]["port"])
-    app.run(host=conf["master"]["ip"], port= conf["master"]["port"])
+    app.run(
+        #debug=True,
+        host=conf["master"]["ip"],
+        port= conf["master"]["port"]
+        )
     #Daemonaze
     """
     path = os.path.abspath(__file__)
