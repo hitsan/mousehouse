@@ -17,7 +17,6 @@ class Slave(Base):
     mac = Column('MAC_ADDRESS', String(255),unique=True,server_default=None)
     version = Column(BigInteger, nullable=False)
     __mapper_args__ = {'version_id_col': version}
-    
 
 class SlaveSchema(SQLAlchemySchema):
     """
@@ -30,16 +29,3 @@ class SlaveSchema(SQLAlchemySchema):
         model = Slave
         load_instance = True
         ordered = True
-"""
-class SlaveSchema(SQLAlchemySchema):
-    Slave Table Schema.
-    class Meta:
-        model = Slave
-        load_instance = True
-        #ordered = True
-
-    id = auto_field()
-    ip = auto_field()
-    status = auto_field()
-    mac = auto_field()
-"""
