@@ -1,7 +1,7 @@
 import logging
 import sys
 import os
-from .config_reader import conf
+from config.config_reader import conf
 
 def get_logger(name, console=False):
     """

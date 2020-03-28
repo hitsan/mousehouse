@@ -1,11 +1,10 @@
-#!/usr/bin/env python
 import time
 import sys
 import errno
 import logging
 import os
 import threading
-from utils.config_reader import conf
+from config.config_reader import conf
 from utils.logger import get_logger
 from api.rest import app
 from db.setting import engine, Base

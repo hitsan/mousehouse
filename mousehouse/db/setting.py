@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from utils.logger import get_logger
-from utils.config_reader import conf
+from config.config_reader import conf
 
 """
 Connect DB server and make session.

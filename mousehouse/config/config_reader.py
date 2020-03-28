@@ -14,7 +14,7 @@ class ConfigReader:
         self._conf = configparser.ConfigParser()
         try:
             path = os.path.abspath(__file__)
-            config_path = path[:-33] + 'config/config.ini'
+            config_path = path[:-34] + 'config/config.ini'
             self._conf.read(config_path, encoding='utf-8')
         except KeyError:  
             print("Please set mousehouse_home", file=sys.stderr)

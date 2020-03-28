@@ -1,7 +1,7 @@
 import time
 import json
 import threading
-from utils.config_reader import conf
+from config.config_reader import conf
 from utils.logger import get_logger
 from utils.connect_ip import ping_ip
 from db.setting import session

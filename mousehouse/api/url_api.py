@@ -3,7 +3,7 @@ import json
 from ipaddress import IPv4Address, AddressValueError
 from flask import abort, Response
 from utils.logger import get_logger
-from utils.config_reader import conf
+from config.config_reader import conf
 from db.setting import session
 from db.model.mouse_table import Mouse
 from sqlalchemy.orm.exc import NoResultFound

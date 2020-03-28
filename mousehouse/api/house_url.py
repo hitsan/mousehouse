@@ -1,7 +1,7 @@
 from utils.logger import get_logger
 from flask import Blueprint, jsonify
 from flask_restful import Resource
-from utils.config_reader import conf
+from config.config_reader import conf
 from .url_api import format_response
 
 logger = get_logger(__name__)
