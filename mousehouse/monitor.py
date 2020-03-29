@@ -14,7 +14,8 @@ class MiceMonitor(threading.Thread):
     """
     def __init__(self):
         threading.Thread.__init__(self)
-
+        self.daemon = True
+        
     def __monitor(self):
         """
         Monitoring mice.

@@ -32,6 +32,7 @@ api.add_resource(Root, '')
 Master's URL
 """
 api.add_resource(House, '/House')
+api.add_resource(HouseConfig, '/House/Config')
 api.add_resource(HouseAction, '/House/Action')
 
 """

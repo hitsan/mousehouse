@@ -20,6 +20,39 @@ class House(Resource):
         logger.info("Get House IP." )
         return format_response(dic)
 
+class HouseConfig(Resource):
+    """
+    Config 
+    """
+    def get(self):
+        """
+        Show Config information
+        """
+        def get_config(self, con):
+            """
+            Get config parameters.
+            """
+            ans = []
+            conf_dic = {}
+            for i in con.sections():
+                for j in conf[i].keys():
+                    conf_dic[j] = conf[i][j]
+                ans.append({i:conf_dic})
+                conf_dic = {}
+            return ans
+        conf_dic = get_config(self, conf)
+        dic = {
+            "@url" : "/mousehouse/House/Config",
+            "Config": conf_dic
+        }
+        logger.debug("Get mousehouse config file." )
+        return format_response(dic)
+    
+    def post(self):
+        """
+        Post config
+        """
+
 class HouseAction(Resource):
     def get(self):
         """
