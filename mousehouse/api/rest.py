@@ -8,6 +8,8 @@ class Root(Resource):
     """
     mousehouse information
     
+    Returns:
+        Response : mousehouse infomation
     """
     def get(self):
         """

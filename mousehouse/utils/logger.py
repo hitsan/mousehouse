@@ -6,10 +6,17 @@ from config.config_reader import conf
 def get_logger(name, console=False):
     """
     Sets the logger configuration and returns the logger.
+
+    Args:
+        name (str) : Class name
+        console (bool) : whether to output to console
+
+    Returns:
+        Logger : logger
     """
     #Set logging level
     logger = logging.getLogger(name)
-    level = _get_level(conf)
+    level = _get_level()
     logger.setLevel(level)
 
     #Set format
@@ -26,9 +33,12 @@ def get_logger(name, console=False):
     logger.addHandler(fhdlr)
     return logger
 
-def _get_level(conf):
+def _get_level():
     """
     Get logging level from config.
+
+    Returns:
+        int : logging level
     """
     level = {"DEBUG":logging.DEBUG, "INFO":logging.INFO, "WARNING":logging.WARNING,
     "WARN":logging.WARN, "CRITICAL":logging.CRITICAL, "ERROR":logging.ERROR}

@@ -14,15 +14,17 @@ class Mice(Resource):
     def get(self, id=None):
         """
         Show mice information in DB.
+
+        Args:
+            id (int) or None : Mice to get
+
+        Returns:
+            Response : Mice list
         """
-        if id is None:
-            mice = session.query(Mouse)
-            mice_list = MouseSchema(many=True).dump(mice)
-            logger.info("Get all mice information.")
-        else:
-            mice = has_id(id)
-            mice_list = MouseSchema().dump(mice)
-            logger.info("Get ID %d mice information." % id)
+        mice_list = get_mice(id)
+        if mice_list is None:
+            mice_list = "Mice is nothing!" if id==None else "ID %s Mice is nothing" % id
+            logger.info(mice_list)
         dic = {
             "@url":"/mousehouse/Mice",
             "Mice" : mice_list
@@ -33,16 +35,22 @@ class Mice(Resource):
         """
         Add a monitoring server.
         Post the IP address and add server information (IP, MAC address, and status) to the DB.
+
+        Args:
+            id (int) or None : ID specified when posting
+
+        Returns:
+            Response : Added Mice
         """
         logger.debug("Add mice request")
-        if id is not None and session.query(Mouse).get(id) is not None:
+        if id is not None and is_exist_id(id):
             abort_404("This ID is exist. Cannot add the mice.")
         s_data = request.json
         try:
             ip = s_data["ip"]
             if not(is_nomal_ip(ip) and is_onlyone_ip(ip)):
                 abort_404("Illegal or duplicated IP address. Check IP Address.")
-            if ping_ip(ip) == 0:
+            if ping_ip(ip) == True:
                 #reachable
                 logger.debug("Found the mice which has %s." % ip)
                 mac_addr = arp_ip(ip)
@@ -73,6 +81,12 @@ class Mice(Resource):
     def put(self, id=None):
         """
         Update server information(IP address and MAC address).
+
+        Args:
+            id (int) : ID specified when puting
+
+        Returns:
+            Response : Modified Mice
         """
         logger.debug("PUT request")
         if id is None:
@@ -94,6 +108,12 @@ class Mice(Resource):
     def delete(self, id=None):
         """
         Delete the monitoring server.
+
+        Args:
+            id (int) : ID specified when deleting
+
+        Returns:
+            Response : http status 200
         """
         if id is None:
             abort_404("No ID is designated. Designate mice ID.")
@@ -111,6 +131,12 @@ class MiceAction(Resource):
         """
         Show mice action lists.
         TODO Implement the script execution function.
+
+        Args:
+            id (int) : ID specified when puting the action
+
+        Returns:
+            Response : Action list
         """
         mice = has_id(id)
         action_list = {"power": ["on"]}
@@ -129,12 +155,18 @@ class MicePower(Resource):
         """
         Control mice power
         TODO Implement reset and shutdown.
+
+        Args:
+            id (int) : ID specified when power on
+
+        Returns:
+            Response : http status 202
         """
         data = request.json
         mice = has_id(id)
         try:
             if data["power"] == "on":
-                if ping_ip(mice.ip) == 0:
+                if ping_ip(mice.ip) == True:
                     abort_404("ID %s is alreadt booted.")
                 if mice.mac == None:
                     abort_404("MAC address is not define.")

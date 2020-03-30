@@ -24,7 +24,7 @@ if __name__=='__main__':
     monitor_thread = MiceMonitor()
     monitor_thread.start()
     app.run(
-        #debug=True,
+        debug=True,
         host=conf["master"]["ip"],
         port= conf["master"]["port"]
         )

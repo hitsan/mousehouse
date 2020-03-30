@@ -12,6 +12,9 @@ class House(Resource):
     def get(self):
         """
         Show House information
+
+        Returns:
+            Response : Master IP address
         """
         dic = {
             "@url" : "/mousehouse/House",
@@ -27,20 +30,27 @@ class HouseConfig(Resource):
     def get(self):
         """
         Show Config information
+
+        Returns:
+            Response : mousehouse configuration.
         """
-        def get_config(self, con):
+        def get_config(self):
             """
             Get config parameters.
+
+            Returns:
+                list[str] : mousehouse configuration.
             """
             ans = []
             conf_dic = {}
-            for i in con.sections():
+            for i in conf.sections():
                 for j in conf[i].keys():
                     conf_dic[j] = conf[i][j]
                 ans.append({i:conf_dic})
                 conf_dic = {}
             return ans
-        conf_dic = get_config(self, conf)
+
+        conf_dic = get_config(self)
         dic = {
             "@url" : "/mousehouse/House/Config",
             "Config": conf_dic
@@ -51,6 +61,7 @@ class HouseConfig(Resource):
     def post(self):
         """
         Post config
+
         """
 
 class HouseAction(Resource):
@@ -58,6 +69,9 @@ class HouseAction(Resource):
         """
         Show House action
         TODO implement actions
+
+        Returns:
+            Response : Power action
         """
         dic = {
             "@url" : "/mousehouse/House/Action",

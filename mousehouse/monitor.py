@@ -31,22 +31,29 @@ class MiceMonitor(threading.Thread):
     def __alive_mouse(self, ip_dic):
         """
         Make sure the mouse is alive or not.
-        Return 
+
+        Args:
+            ip_dic (Mouse) : All Mice
+
+        Returns:
+            str : Return {{id: status} in json format
         """
         status ={}
         for mouse in ip_dic:
-            status[mouse['id']] = True if  ping_ip(mouse['ip']) == 0 else False
+            status[mouse['id']] = True if  ping_ip(mouse['ip']) == True else False
         return json.dumps(status)
     
     def __update_status(self, id_status):
         """
         Updata mice status
-        commit 
+
+        Args:
+            id_status (str) : {id: status} in json format
         """
         id_status = json.loads(id_status)
-        for dic in id_status:
-            mouse = session.query(Mouse).filter(Mouse.id==dic).first()
-            mouse.status = id_status[dic]
+        for s_id in id_status:
+            mouse = session.query(Mouse).filter(Mouse.id==s_id).first()
+            mouse.status = id_status[s_id]
         session.commit()
 
     def run(self):
