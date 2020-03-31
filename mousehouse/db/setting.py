@@ -8,7 +8,7 @@ from config.config_reader import conf
 Connect DB server and make session.
 """
 logger = get_logger(__name__, True)
-dbUrl = 'mysql+mysqlconnector://%s:%s@%s/%s?charset=utf8' % (
+dbUrl = 'mysql+pymysql://%s:%s@%s/%s?charset=utf8' % (
     conf["db"]["user"],
     conf["db"]["pass"],
     conf["db"]["ip"],
