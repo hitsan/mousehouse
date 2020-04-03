@@ -48,16 +48,14 @@ def kick_mouse(mac):
     Args:
         mac (str) : Ip with the mac you want to know.
     """
-    broadcast = '255.255.255.255'
-    port = 7
+    BROAD_CAST = '255.255.255.255'
+    PORT = 7
 
-    mac_add = ''.join(mac.split(':'))
-    m_data = 'FF' * 6 + mac_add * 16
-    m_data = binascii.unhexlify(m_data)
+    m_data = 'FF' * 6 + ''.join(mac.split(':')) * 16
+    magic_packet = binascii.unhexlify(m_data)
 
-    con = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    con.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    con.sendto(m_data, (broadcast, port))
+    connection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    connection.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    connection.sendto(magic_packet, (BROAD_CAST, PORT))
     logger.info("Send magic packet to %s" % mac)
- 
-    con.close()
+    connection.close()

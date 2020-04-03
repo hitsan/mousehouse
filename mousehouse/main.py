@@ -10,6 +10,8 @@ from api.rest import app
 from db.setting import engine, Base
 from monitor import MiceMonitor
 
+from api.authentication import add_users
+
 logger = get_logger(__name__, True)
 def initialize():
     """
@@ -24,7 +26,7 @@ if __name__=='__main__':
     monitor_thread = MiceMonitor()
     monitor_thread.start()
     app.run(
-        #debug=True,
+        debug=True,
         host=conf["master"]["ip"],
         port= conf["master"]["port"]
         )

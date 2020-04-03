@@ -3,12 +3,14 @@ from flask import Blueprint, jsonify
 from flask_restful import Resource
 from config.config_reader import conf
 from .url_api import format_response
+from .authentication import authenticate
 
 logger = get_logger(__name__)
 class House(Resource):
     """
     House is a monitering server.
     """
+    @authenticate
     def get(self):
         """
         Show House information
@@ -27,6 +29,7 @@ class HouseConfig(Resource):
     """
     Config 
     """
+    @authenticate
     def get(self):
         """
         Show Config information
@@ -58,6 +61,7 @@ class HouseConfig(Resource):
         logger.debug("Get mousehouse config file." )
         return format_response(dic)
     
+    @authenticate
     def post(self):
         """
         Post config
@@ -65,6 +69,10 @@ class HouseConfig(Resource):
         """
 
 class HouseAction(Resource):
+    """
+    Action
+    """
+    @authenticate
     def get(self):
         """
         Show House action

@@ -8,12 +8,14 @@ from config.config_reader import conf
 Connect DB server and make session.
 """
 logger = get_logger(__name__, True)
-dbUrl = 'mysql+pymysql://%s:%s@%s/%s?charset=utf8' % (
+db_url = '%s+%s://%s:%s@%s/%s?charset=utf8' % (
+    conf['db']['sql'].lower(),
+    conf['db']['connector'].lower(),
     conf["db"]["user"],
     conf["db"]["pass"],
     conf["db"]["ip"],
     conf["db"]["name"])
-engine = create_engine(dbUrl, encoding = "utf-8")
+engine = create_engine(db_url, encoding = "utf-8")
 Session = sessionmaker(
         autocommit = False,
         autoflush = True,        

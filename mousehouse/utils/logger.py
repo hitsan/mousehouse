@@ -22,15 +22,15 @@ def get_logger(name, console=False):
     #Set format
     fmt = logging.Formatter("%(asctime)s:%(name)s:%(levelname)s:%(message)s")
     path = os.path.abspath(__file__)
-    logFlie = path[:-26] + 'logs/master.log'
-    fhdlr = logging.FileHandler(logFlie)
-    fhdlr.setFormatter(fmt)
+    log_flie = path[:-26] + 'logs/master.log'
+    f_handler = logging.FileHandler(log_flie)
+    f_handler.setFormatter(fmt)
     if console is True:
-        shdlr = logging.StreamHandler()
-        shdlr.setFormatter(fmt)
-        logger.addHandler(shdlr)
+        s_handler = logging.StreamHandler()
+        s_handler.setFormatter(fmt)
+        logger.addHandler(s_handler)
 
-    logger.addHandler(fhdlr)
+    logger.addHandler(f_handler)
     return logger
 
 def _get_level():

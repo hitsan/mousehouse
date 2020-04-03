@@ -5,12 +5,14 @@ from utils.connect_ip import ping_ip, arp_ip, kick_mouse
 from db.setting import session
 from db.model.mouse_table import Mouse, MouseSchema
 from .url_api import *
+from .authentication import authenticate
 
 logger = get_logger(__name__)
 class Mice(Resource):
     """
     Mice are monitored servers.
     """
+    @authenticate
     def get(self, id=None):
         """
         Show mice information in DB.
@@ -22,6 +24,7 @@ class Mice(Resource):
             Response : Mice list
         """
         mice_list = get_mice(id)
+        #print(request.['password'])
         if mice_list is None:
             mice_list = "Mice is nothing!" if id==None else "ID %s Mice is nothing" % id
             logger.info(mice_list)
@@ -30,7 +33,8 @@ class Mice(Resource):
             "Mice" : mice_list
         }
         return format_response(dic)
-         
+    
+    @authenticate
     def post(self, id=None):
         """
         Add a monitoring server.
@@ -78,6 +82,7 @@ class Mice(Resource):
         }
         return format_response(dic, 201)
 
+    @authenticate
     def put(self, id=None):
         """
         Update server information(IP address and MAC address).
@@ -104,7 +109,8 @@ class Mice(Resource):
             "Mice" : MouseSchema().dump(ret)
         }
         return format_response(dic, 201)
-    
+
+    @authenticate
     def delete(self, id=None):
         """
         Delete the monitoring server.
@@ -127,6 +133,7 @@ class MiceAction(Resource):
     """
     Define mice action.
     """
+    @authenticate
     def get(self, id=None):
         """
         Show mice action lists.
@@ -151,6 +158,7 @@ class MicePower(Resource):
     """
     Define mice Power action.
     """
+    @authenticate
     def post(self, id=None):
         """
         Control mice power

@@ -2,7 +2,7 @@
 
 Mouse House is a server management and control tool that uses REST API.
  
-# Features
+# Introducion
  
 "hoge"のセールスポイントや差別化などを説明する
  
@@ -32,7 +32,7 @@ python demo.py
  
 # Note
  
-注意点などがあれば書く
+This software use MySQL and PyMySQL
  
 # License
  
