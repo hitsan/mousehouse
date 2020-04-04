@@ -317,10 +317,10 @@ class MicePower(Resource):
         data = request.json
         mice = has_id(id)
         try:
-            if data["power"] == "on":
-                if ping_ip(mice.ip) == True:
+            if data["Power"] == "on":
+                if ping_ip(mice.IP) == True:
                     abort_400("ID %s is alreadt booted.")
-                if mice.mac == None:
+                if mice.MAC == None:
                     abort_400("MAC address is not define.")
                 kick_mouse(mice.mac)  
         except KeyError:
