@@ -19,12 +19,24 @@ def initialize():
     Start logging and setup DB.
     """
     logger.info('Initialize mousehouse')
-    Base.metadata.create_all(bind=engine)   
+    time_out = 5
+    while time_out > 0:
+        try:
+            Base.metadata.create_all(bind=engine)
+        except:
+            time_out -= 1
+            time.sleep(1)
+            if time_out == 0:
+                logger.error("Cannot connect DB server. Check config.ini file.")
+                exit(0)
+        else:
+            time_out = -1
 
 if __name__=='__main__':
+    #add_users("mouse","house")
     initialize()
-    monitor_thread = MiceMonitor()
-    monitor_thread.start()
+    # monitor_thread = MiceMonitor()
+    # monitor_thread.start()
     app.run(
         debug=True,
         host=conf["master"]["ip"],

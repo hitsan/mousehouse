@@ -21,7 +21,10 @@ class MiceMonitor(threading.Thread):
         Monitoring mice.
         Determine whether connection is possible.
         """
-        all_mice = session.query(Mouse.id, Mouse.ip).all()
+        try:
+            all_mice = session.query(Mouse.id, Mouse.ip).all()
+        except:
+            all_mice = None
         if all_mice is None:
             return
         ip_dic = MouseSchema(many=True).dump(all_mice)
@@ -60,6 +63,7 @@ class MiceMonitor(threading.Thread):
         """
         Call monitor at regular intervals
         """
+        time.sleep(10)
         try:
             interval = int(conf['monitoring']['interval'])
         except KeyError:

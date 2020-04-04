@@ -40,6 +40,7 @@ api.add_resource(HouseAction, '/House/Action')
 """
 Slaves's URL
 """
-api.add_resource(Mice, '/Mice','/Mice/<int:id>')
+api.add_resource(Mice, '/Mice')
+api.add_resource(MiceID, '/Mice/<int:id>')
 api.add_resource(MiceAction, '/Mice/<int:id>/Action')
 api.add_resource(MicePower, '/Mice/<int:id>/Action/Power')

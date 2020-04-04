@@ -24,34 +24,34 @@ def format_response(data, status=200):
     response.headers['Content-Type'] = "application/json"
     return response
 
-def check_ip_mac(id, ip=None, mac=None):
-    """
-    Check that the IP and Mac address is correct and not duplicated.
+# def check_ip_mac(id, ip=None, mac=None):
+#     """
+#     Check that the IP and Mac address is correct and not duplicated.
 
-    Args:
-        id (int) : ID to check
-        ip (str) : IP address to check
-        mac (str) : MAC address to check
+#     Args:
+#         id (int) : ID to check
+#         ip (str) : IP address to check
+#         mac (str) : MAC address to check
 
-    Returns:
-        Mouse : Returns Moues, if there is a problem with the IP address and MAC address, execute abort_404.
-    """
-    if ip == None and mac == None:
-        abort_404("Illegal parameter. Check your command.")
-    mice = has_id(id)
-    if ip is not None:
-        # Check that the IP address is correct and not duplicated.
-        if is_nomal_ip(ip) and (is_onlyone_ip(ip) ^ is_same_ip(id, ip)):
-            mice.ip = ip
-        else:
-            abort_404("Illegal IP address. Check your command.")
-    if mac is not None:
-        # Check that the MAC address is correct and not duplicated.
-        if is_nomal_mac(mac) and (is_onlyone_mac(mac) ^ is_same_mac(id, mac)):
-            mice.mac = mac
-        else:
-            abort_404("Illegal MAC address. Check your command.")
-    return mice
+#     Returns:
+#         Mouse : Returns Moues, if there is a problem with the IP address and MAC address, execute abort_404.
+#     """
+#     if ip == None and mac == None:
+#         abort_400("Illegal parameter. Check your command.")
+#     mice = has_id(id)
+#     if ip is not None:
+#         # Check that the IP address is correct and not duplicated.
+#         if is_nomal_ip(ip) and (is_onlyone_ip(ip) ^ is_same_ip(id, ip)):
+#             mice.ip = ip
+#         else:
+#             abort_400("Illegal IP address. Check your command.")
+#     if mac is not None:
+#         # Check that the MAC address is correct and not duplicated.
+#         if is_nomal_mac(mac) and (is_onlyone_mac(mac) ^ is_same_mac(id, mac)):
+#             mice.mac = mac
+#         else:
+#             abort_400("Illegal MAC address. Check your command.")
+#     return mice
 
 def has_id(id):
     """
@@ -78,7 +78,7 @@ def is_same_ip(id, ip):
         bool : Returns True if the ID and IP address correspond, otherwise return False
     """
     mice = session.query(Mouse).get(id)
-    return True if ip == mice.ip else False
+    return True if ip == mice.IP else False
 
 def is_same_mac(id, mac):
     """
@@ -92,7 +92,7 @@ def is_same_mac(id, mac):
         bool : Returns True if the ID and MAC address correspond, otherwise return False
     """
     mice = session.query(Mouse).get(id)
-    return True if mac == mice.mac else False
+    return True if mac == mice.MAC else False
 
 def is_nomal_ip(ip):
     """
@@ -104,6 +104,8 @@ def is_nomal_ip(ip):
     Returns:
         bool : If the specified IP address is nomaly return Ture, otherwise return False
     """
+    if ip is None:
+        return False
     try:
         if IPv4Address(ip) is not None:
             logger.debug("%s is normal IP address." % ip)
@@ -122,6 +124,8 @@ def is_nomal_mac(mac):
     Returns:
         bool : If the specified MAC address is nomaly return Ture, otherwise return False
     """
+    if mac is None:
+        return False
     mac_format = "[0-9a-f]{2}([-:])[0-9a-f]{2}(:[0-9a-f]{2}){4}$"
     return True if re.match(mac_format, mac.lower()) else False
 
@@ -136,7 +140,7 @@ def is_onlyone_ip(ip):
         bool : Returns True if IP is duplicated, False if not.
     """
     try:
-        session.query(Mouse).filter_by(ip=ip).one()
+        session.query(Mouse).filter_by(IP=ip).one()
         logger.debug("%s is duplicated." % ip)
         return False
     except NoResultFound:
@@ -154,7 +158,7 @@ def is_onlyone_mac(mac):
         bool : If the specified MAC address is not duplicated return Ture, otherwise return False
     """
     try:
-        session.query(Mouse).filter_by(mac=mac).one()
+        session.query(Mouse).filter_by(MAC=mac).one()
         logger.debug("%s is duplicated." % mac)
         return False
     except NoResultFound:
@@ -187,13 +191,33 @@ def get_mice(id=None):
                        If mice is not exist return None.
     """
     if id is None:
+        logger.info("GET all mice.")
         mice = session.query(Mouse)
-        return None if mice is None else MouseSchema(many=True).dump(mice)
+        return None if not mice else MouseSchema(many=True).dump(mice)
     else:
+        logger.info("GET ID %s mice." % id)
         mice = has_id(id)
         return None if mice is None else MouseSchema().dump(mice)
 
-def abort_404(message):
+def correct_request_parameter(pram):
+    """
+    Check Invaild parameters.
+
+    Args:
+        pram list(str) : Request keys
+    """
+    user_param = ["ID", "IP", "MAC", "Status", "OS", "User", "Host", "Password", "Description"]
+    if list(filter(lambda x:not(x in user_param), pram)):
+        print( list(filter(lambda x:not(x in user_param), pram)) )
+        abort_400("Invaild parameter! Check request data.", 403)
+
+def abort_400(message, status=404):
+    """
+    Abort 400
+
+    Args:
+        message (str) : Abort messege
+    """
     logger.error(message)
     dic = {"message": message}
-    abort(format_response(dic,404))
+    abort(format_response(dic,status))
