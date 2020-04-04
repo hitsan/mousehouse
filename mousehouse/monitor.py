@@ -22,7 +22,7 @@ class MiceMonitor(threading.Thread):
         Determine whether connection is possible.
         """
         try:
-            all_mice = session.query(Mouse.id, Mouse.ip).all()
+            all_mice = session.query(Mouse.ID, Mouse.IP).all()
         except:
             all_mice = None
         if all_mice is None:
@@ -43,7 +43,7 @@ class MiceMonitor(threading.Thread):
         """
         status ={}
         for mouse in ip_dic:
-            status[mouse['id']] = True if  ping_ip(mouse['ip']) == True else False
+            status[mouse['ID']] = True if  ping_ip(mouse['IP']) == True else False
         return json.dumps(status)
     
     def __update_status(self, id_status):
@@ -55,7 +55,7 @@ class MiceMonitor(threading.Thread):
         """
         id_status = json.loads(id_status)
         for s_id in id_status:
-            mouse = session.query(Mouse).filter(Mouse.id==s_id).first()
+            mouse = session.query(Mouse).filter(Mouse.ID==s_id).first()
             mouse.status = id_status[s_id]
         session.commit()
 
@@ -63,7 +63,6 @@ class MiceMonitor(threading.Thread):
         """
         Call monitor at regular intervals
         """
-        time.sleep(10)
         try:
             interval = int(conf['monitoring']['interval'])
         except KeyError:

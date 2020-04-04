@@ -33,10 +33,9 @@ def initialize():
             time_out = -1
 
 if __name__=='__main__':
-    #add_users("mouse","house")
     initialize()
-    # monitor_thread = MiceMonitor()
-    # monitor_thread.start()
+    monitor_thread = MiceMonitor()
+    monitor_thread.start()
     app.run(
         debug=True,
         host=conf["master"]["ip"],
