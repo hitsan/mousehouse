@@ -5,7 +5,6 @@ from sqlalchemy.sql.sqltypes import BigInteger
 from db.setting import Base
 from marshmallow_sqlalchemy import SQLAlchemySchema, auto_field
 from marshmallow import Schema, fields
-from db.model.vm_table import Vm
 
 class Mouse(Base):
     """
@@ -24,7 +23,6 @@ class Mouse(Base):
     Data = Column('Data', String(255))
     Description  = Column('DESCRIPTION', String(255))
     version = Column(BigInteger, nullable=False)
-    vms = relationship("Vm", backref="event")
     __mapper_args__ = {'version_id_col': version}
 
 class MouseSchema(SQLAlchemySchema):
