@@ -1,6 +1,6 @@
 # mousehouse
 
-Mouse House is a server management and control tool that uses REST API.
+Mouse House is a server control tool that uses REST API.
 
  
 # License
